@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>&#x60C5;&#x5831;&#x51E6;&#x7406;&#x6F14;&#x7FD2; &#x8AB2;&#x984C;&lowbar;&#x30B5;&#x30FC;&#x30D0;&#x69CB;&#x7BC9;</title>
+        <style>
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="情報処理演習-課題_サーバ構築"><strong>情報処理演習 課題_サーバ構築</strong></h1>
+<div style="text-align:right;">
+2021/05/13(木)<br>
+mi8216miya
+</div>
+<h2 id="1-各種ダウンロード">1. <strong>各種ダウンロード</strong></h2>
+<h3 id="1-virtualbox-クライアント拡張パッケージ">1. VirtualBox クライアント・拡張パッケージ</h3>
+<p><a href="https://download.virtualbox.org/virtualbox/6.1.22/VirtualBox-6.1.22-144080-Win.exe">クライアント / Windows</a>
+<br><a href="https://download.virtualbox.org/virtualbox/6.1.22/Oracle_VM_VirtualBox_Extension_Pack-6.1.22.vbox-extpack">拡張パッケージ</a></p>
+<h3 id="2-centos">2. CentOS</h3>
+<p><a href="http://ftp.iij.ad.jp/pub/linux/centos/7.9.2009/isos/x86_64/CentOS-7-x86_64-Minimal-2009.iso">CentOS .isoファイル / Linux - x86_64 (2009)</a></p>
+<h2 id="2-各種インストール">2. <strong>各種インストール</strong></h2>
+<h3 id="1virtualbox">1.VirtualBox</h3>
+<ol>
+<li>クライアント
+<br>デバイスソフトウェアをインストール</li>
+<li>拡張パッケージ
+<br>ライセンスに同意して，ダウンロードした拡張パッケージファイル(.vbox-extpack)をインストール</li>
+</ol>
+<h3 id="2-centos-1">2. CentOS</h3>
+<ol>
+<li>仮想マシン作成
+<br>タイプ: <strong>Linux</strong>, バージョン: **Red Hat (64-bit)**を選択
+<br>※64-bit版が選択できない場合，BIOSにアクセスして「<strong>仮想化</strong>」をオンにする
+<br>(En: Intel Virtualization Technology)</li>
+<li>各種設定
+<ol>
+<li>ネットワーク
+<br>ネットワークタブにある，アダプター1「NAT」に加え，アダプター2「<strong>ホストオンリーアダプタ</strong>」を追加
+<br>※ホストマシン上のアプリケーション(Tera term等)から仮想マシンに接続するために利用</li>
+<li>ストレージ
+<br>コントローラー: IDEとして，ダウンロードした.isoファイルを選択</li>
+<li>インストールフェーズ
+<br>※以降，VirtualBox内の仮想環境では「<strong>右Ctrl</strong>」キーでズームアウトする
+<br>(マウスカーソルが仮想環境内から外れ，Windowsの操作ができるようになる)
+<ol>
+<li>言語・地域
+<br>Japanese; Japanを選択</li>
+<li>ネットワークとホスト名
+<br><strong>Ethernet</strong> (enp0s3およびenp0s8)に対し，「オン」にする
+<br>それぞれ設定/全般タブから，「この接続が利用可能になったときは自動的に接続する」にチェックを入れる</li>
+<li>インストール先
+<br>何もせずそのまま「完了」をクリック</li>
+<li>日付と時刻
+<br>歯車ボタンを押し，<code>ntp.nict.jp</code>をNTPサーバとして追加(「+」マークを押す)</li>
+<li>rootパスワード，ユーザ作成
+<br>root(管理者)のパスワードを決定し，別途作成するユーザのID/パスワードを入力する</li>
+<li>再起動
+<br>インストールが完了したら「再起動」ボタンを押して再起動</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="3-初期設定">3. <strong>初期設定</strong></h2>
+<h3 id="1-初回ログイン再起動">1. 初回ログイン・再起動</h3>
+<p>rootでログインし，シャットダウン/再起動を行う
+<br><strong>【コマンド】</strong>
+<br>すぐにシャットダウンする場合は <code>$ shutdown -h now</code>
+<br>※shutdown(シャットダウン)操作のうち，halt(停止)をnow(今)実行，という意味
+<br>再起動の場合は-hではなく-rオプションをつける</p>
+<h3 id="2-rootでのログイン禁止">2. rootでのログイン禁止</h3>
+<ol>
+<li>プライベートIPアドレスの確認
+<br>SSH接続で使用するためのプライベートIPアドレスを，下記のコマンドで調べる
+<br><code>ip addr</code>
+<br>⇒<code>3: enp0s8</code>欄の<code>inet</code>以降にあるのが<strong>プライベートIPアドレ</strong>ス(例: <code>192.168.56.102</code>)
+<br>※1.はローカルループバック，2.はグローバルIPアドレス?
+<br>※<code>ifconfig</code>コマンドは古いためバージョンの新しいCentOSでは利用できない
+<br>　net-toolsパッケージをインストールすれば使用可能(しなくてよい)
+<br>　<code>$ sudo yum install net-tools</code></li>
+<li>ターミナルでのログイン
+<br>Tera termなどのターミナルアプリでログインする
+<br>IPアドレスは先ほど見つけたもの，ユーザ名は<code>root</code>を入力しログイン</li>
+<li>設定の書き換え
+<br>viというエディタで<code>/etc/ssh/</code>パスにある<code>sshd_config</code>ファイルを編集する
+<br><code>$ vi /etc/ssh/sshd_config</code>
+<br><code>#PermitRootLogin yes</code>を<code>PermitLootLogin no</code>に変更
+<br>※先頭のコメントアウトを外すこと，<code>:wq</code>で保存することを忘れずに
+<br><code>$ grep 検索文字列 検索ファイル</code> で編集できたかを確認できる</li>
+<li>sshdの再起動，再ログイン
+<br><code>$ systemctl restart sshd</code>と入力し，設定を適用
+<br>再度rootでログインしようとして，失敗すればOK</li>
+<li>ユーザの管理者グループへの追加
+<ol>
+<li>rootへのスイッチ
+<br>今度はユーザアカウントでログインし，<code>$ su -</code>と入力し，rootのパスワードを入力</li>
+<li>管理者グループへの追加
+<br>/etc/groupの&quot;wheel&quot;を含む行の末尾にユーザIDを追加
+<br><code>$ vi /etc/group</code>
+<br>例: <code>wheel:x:10:pkmiya</code> ユーザ名&quot;pkmiya&quot;を追加</li>
+<li>追加できたかどうかの確認
+<br>ユーザディレクトリの外に対してコマンドを実行するなど，rootでしか実行できないコマンドが実行できるようになる
+<br>例: <code>$ touch /hoge.txt</code>(ストレージ直下でhoge.txtファイルのタイムスタンプを更新)は実行できないが，<code>$ sudo touch /hoge.txt</code>は実行可能
+<br>⇒<code>$ sudo rm /hoge.txt</code>(rmコマンド)でファイルを削除可能</li>
+</ol>
+</li>
+</ol>
+<h3 id="3-各種更新インストール">3. 各種更新・インストール</h3>
+<ol>
+<li>CentOSの更新
+<br>パッケージリストを更新する
+<br><code>$ sudo yum update</code>
+<br>実行できない場合，下記コマンドでextraのレポジトリを無効にして再度実行
+<br><code>$ sudo yum update --disablerepo=extras</code></li>
+<li>nanoのインストール
+<br><code>$ sudo yum install nano</code>
+<br>※viで十分</li>
+</ol>
+<h2 id="4-apacheの実装">4. <strong>Apacheの実装</strong></h2>
+<p>参考Webサイト: <a href="https://qiita.com/S-Masakatsu/items/63b9e0e7a869d2aafc4b">Qiita - CentOSでApacheをインストールし起動する</a></p>
+<h3 id="1-表示用htmlファイルの作成転送">1. 表示用htmlファイルの作成・転送</h3>
+<ol>
+<li>表示用htmlファイルの作成
+<br>エディタ(メモ帳やVS Code，Atomなど)で適当なhtmlファイルを作成(以下，一例)</li>
+</ol>
+<pre><code class="language-html"><div><span class="hljs-comment">&lt;!-- SS.html --&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;ja&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;X-UA-Compatible&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;IE=edge&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;viewport&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Example<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>mi8216miya&#x27;s server<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Hello! You&#x27;re currently connecting to a website created by mi8216miya successfully.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</div></code></pre>
+<ol start="2">
+<li>表示用htmlファイルの転送
+<br>TeraTermの場合，SSH SCPで転送ファイル，転送先を指定して転送</li>
+</ol>
+<h3 id="2-httpサーバへの公開">2. HTTPサーバへの公開</h3>
+<ol>
+<li>Apacheのインストール
+<br>下記コマンドを入力し，Apacheをインストールする
+<br>※<code>-y</code>コマンドはストレージの使用などに際し，確認せずに無視するということ
+<br><code>$ sudo yum -y install httpd</code>
+<br>インストールができれば，下記のコマンドを入力してパスが表示される
+<br><code>$ which httpd</code></li>
+<li>設定ファイルの変更
+<br>下記コマンドを入力し，以下のように値を変更する
+<br><code>$ sudo vi /etc/httpd/conf/httpd.conf</code>
+<br><code>#ServerName www.example.com:80</code> を <code>ServerName www.example.com</code>に変更
+<br><code>$ httpd -t</code>コマンドを入力して，構文チェックが可能(<code>Syntax OK</code>と表示されればよい)</li>
+<li>Apacheの起動
+<br>下記コマンドを入力して，Apacheを起動する
+<br><code>$ sudo systemctl restart httpd</code>
+<br>なお，自動で起動したい場合は以下のように入力する
+<br><code>$ sudo systemctl enable httpd</code></li>
+<li>ファイアウォールの設定
+<br>下記のコマンドを入力して，HTTPプロトコルで使用される80番ポートへの外部からのアクセスを許可し，設定を適用する
+<br><code>$ sudo firewall-cmd --permanent --add-service=http</code>
+<br><code>$ sudo firewall-cmd --reload</code></li>
+<li>ブラウザからのアクセス
+<br>ブラウザからアクセスし，Apacheのテストページが表示されるか確認する．(Testing 123...と出れば成功)</li>
+<li>htmlファイルの公開
+<br>先ほど転送したファイルを<code>mv</code>コマンドを使って<code>/var/www/html/</code>内に移動させ，再度アクセスする
+<br>自分の場合，上記に示したSS.htmlを用いると，下記のように表示された
+<br>
+<img width="680" alt="connected-pic" src="connected.png">
+<br>※<code>403 Forbidden</code> と表示される場合
+<br>自分の場合，下記のようにSELinuxを無効化して表示されるようにした
+<br>SELinuxが有効の場合，DocumentRootへのアクセスが拒否されている可能性がある
+<br>　<code>$ getenforce</code>と入力して<code>enforcing</code>と出力された場合，<code>/etc/selinux/config</code>の設定を変更し，サーバを再起動することで表示される
+<br>　<code>$ sudo vi /etc/selinux/config</code>
+<br>　<code>SELINUX = enforcing</code> から <code>SELINUX = disabled</code> に書き換え</li>
+</ol>
+<div style="text-align:right;">
+<font size="4">
+<b>以上</b>
+</font><br>
+</div>
+    </body>
+    </html>
