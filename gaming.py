@@ -1,4 +1,7 @@
-from sense_hat import SenseHat
+# Real machine: from sense_hat import SenseHat
+# Emulator:     from sense_emu import SenseHat
+
+from sense_emu import SenseHat
 sense = SenseHat()
 import time
 
