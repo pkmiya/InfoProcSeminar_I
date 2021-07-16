@@ -1,0 +1,9 @@
+# specifications
+
+[Loop of the following]
+Client: select menu
+    q:  quit
+    y:  claim for temperature and humidity
+Server: send meteorological data to client
+Client: light up its LED monitor according to the THI(temeprature-humidity index)
+
